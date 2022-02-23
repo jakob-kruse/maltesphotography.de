@@ -9,7 +9,7 @@ export function FormError({
 }) {
   if (error) {
     return (
-      <p className="text-red-500 text-sm pt-2">{message ?? error.message}</p>
+      <p className="pt-2 text-sm text-red-500">{message ?? error.message}</p>
     );
   }
   return <></>;

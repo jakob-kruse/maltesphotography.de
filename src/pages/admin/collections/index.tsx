@@ -8,7 +8,7 @@ import type { ReactElement } from 'react';
 
 function EmptyState() {
   return (
-    <div className="text-center my-4">
+    <div className="my-4 text-center">
       <svg
         className="mx-auto h-12 w-12 text-gray-400"
         fill="none"
@@ -30,7 +30,7 @@ function EmptyState() {
       </p>
       <div className="mt-6">
         <Link href="/admin/collections/create">
-          <a className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <a className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
             Create new Collection
           </a>
@@ -52,34 +52,34 @@ function CollectionList({ collections }: { collections: Collection[] }) {
       {collections.map((collection) => (
         <li
           key={collection.id}
-          className="col-span-1 bg-white rounded-lg shadow divide-y divide-gray-200"
+          className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow"
         >
           <div className="flex-1 truncate p-6">
-            <h3 className="text-gray-900 text-sm font-medium truncate">
+            <h3 className="truncate text-sm font-medium text-gray-900">
               {collection.name}
             </h3>
-            <p className="mt-1 text-gray-500 text-sm truncate">
+            <p className="mt-1 truncate text-sm text-gray-500">
               {collection.description || 'No description'}
             </p>
           </div>
           <div>
             <div className="-mt-px flex divide-x divide-gray-200">
-              <div className="w-0 flex-1 flex">
+              <div className="flex w-0 flex-1">
                 <Link href={`/admin/collections/${collection.id}/layout`}>
-                  <a className="relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500">
+                  <a className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
                     <TemplateIcon
-                      className="w-5 h-5 text-gray-400"
+                      className="h-5 w-5 text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3">Layout</span>
                   </a>
                 </Link>
               </div>
-              <div className="w-0 flex-1 flex">
+              <div className="flex w-0 flex-1">
                 <Link href={`/admin/collections/${collection.id}/edit`}>
-                  <a className="relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-gray-500">
+                  <a className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
                     <PencilIcon
-                      className="w-5 h-5 text-gray-400"
+                      className="h-5 w-5 text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3">Edit</span>
@@ -109,13 +109,13 @@ export default function AdminCollections({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
-      <div className="mb-5 pb-5 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
-        <h3 className="text-lg leading-6 font-medium text-gray-900">
+      <div className="mb-5 border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
+        <h3 className="text-lg font-medium leading-6 text-gray-900">
           Collections
         </h3>
         <div className="mt-3 sm:mt-0 sm:ml-4">
           <Link href="/admin/collections/create">
-            <a className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <a className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
               Create new Collection
             </a>
           </Link>

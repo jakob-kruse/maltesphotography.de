@@ -5,3 +5,7 @@
 .input-error {
   @apply border-red-500;
 }
+
+* {
+  font-family: 'Inter';
+}
