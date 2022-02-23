@@ -1,0 +1,1 @@
+# Photography Website in Next.js

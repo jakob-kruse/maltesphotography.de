@@ -1,0 +1,44 @@
+{
+  "name": "maltography",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "build": "next build",
+    "start": "next start",
+    "format": "prettier --write '**/*.{ts,tsx}'",
+    "lint": "next lint",
+    "prepare": "git config --local core.hooksPath .githooks"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^4.5.4",
+    "@headlessui/react": "^1.5.0",
+    "@heroicons/react": "^1.0.5",
+    "@hookform/resolvers": "^2.8.8",
+    "@prisma/client": "3.9.2",
+    "@tailwindcss/forms": "^0.4.0",
+    "cuid": "^2.1.8",
+    "ky": "^0.29.0",
+    "next": "12.1.0",
+    "prisma": "^3.9.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-hook-form": "^7.27.1",
+    "ts-node": "^10.5.0",
+    "zod": "^3.11.6"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.19",
+    "@types/react": "17.0.39",
+    "autoprefixer": "^10.4.2",
+    "eslint": "^8.9.0",
+    "eslint-config-next": "^12.1.0",
+    "eslint-config-prettier": "^8.4.0",
+    "lint-staged": "^12.3.4",
+    "postcss": "^8.4.6",
+    "prettier": "^2.5.1",
+    "prettier-plugin-organize-imports": "^2.3.4",
+    "tailwindcss": "^3.0.23",
+    "typescript": "^4.5.5"
+  }
+}
