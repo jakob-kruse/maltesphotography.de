@@ -1,4 +1,5 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
+
 import { errorHandler } from './error-handler';
 
 export type ApiMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';

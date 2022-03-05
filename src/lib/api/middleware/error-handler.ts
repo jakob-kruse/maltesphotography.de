@@ -28,6 +28,19 @@ export function errorHandler(handler: NextApiHandler) {
             details: null,
           };
         }
+
+        if (error.code === 'P2003') {
+          let fieldName = 'Unknown';
+          if (error.meta && 'field_name' in error.meta) {
+            fieldName = (error.meta as { field_name: string }).field_name;
+          }
+
+          errorCode = 404;
+          responseError = {
+            message: `Cannot find the relationship: "${fieldName}"`,
+            details: null,
+          };
+        }
       }
 
       if (responseError === null) {

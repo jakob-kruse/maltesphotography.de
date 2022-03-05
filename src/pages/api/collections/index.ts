@@ -1,22 +1,30 @@
-import { _CollectionModel } from '$lib/api/schemas';
-import { z } from 'zod';
-import { prisma } from '../../../lib/prisma';
-import { validate } from '../../../lib/api/middleware/validate';
-import { ApiResponseData } from '$lib/util';
-import { Collection } from '@prisma/client';
-
-const _CreateCollection = _CollectionModel.omit({ id: true });
+import { validate } from '$lib/api/middleware/validate';
+import {
+  Collection,
+  CreateCollection,
+  CreateCollectionSchema,
+} from '$lib/api/schemas/collection';
+import { prisma } from '$lib/prisma';
+import type { ApiResponseData } from '$lib/util';
+import slugify from 'slugify';
 
 const schemaMap = {
   GET: null,
-  POST: _CreateCollection,
+  POST: CreateCollectionSchema,
 };
 
 export default validate(schemaMap, async (req, res) => {
   switch (req.method as keyof typeof schemaMap) {
     case 'POST':
+      const postData = req.body as CreateCollection;
+      if (!postData.urlName) {
+        postData.urlName = slugify(postData.title, {
+          lower: true,
+        });
+      }
+
       const collection = await prisma.collection.create({
-        data: req.body as z.infer<typeof _CreateCollection>,
+        data: req.body as CreateCollection & { urlName: string },
       });
 
       return res

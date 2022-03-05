@@ -2,12 +2,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator zod {
-  provider      = "zod-prisma"
-  output        = "../src/lib/api/schemas/generated"
-  relationModel = "default"
-}
-
 datasource db {
   provider          = "postgresql"
   url               = env("DATABASE_URL")
@@ -15,7 +9,55 @@ datasource db {
 }
 
 model Collection {
-  id          String  @id @default(cuid())
-  name        String
+  id      String @id @default(cuid())
+  urlName String
+
+  title       String
+  description String?
+  coverId     String?
+
+  albums Album[]
+}
+
+model Album {
+  id      String @id @default(cuid())
+  urlName String
+
+  title       String
+  description String?
+  coverId     String?
+
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId String?
+
+  files File[]
+}
+
+model File {
+  id      String @id @default(cuid())
+  urlName String
+
+  title String
+
+  description String?
+
+  internal Boolean @default(false)
+
+  mimeType String
+  fileName String
+  size     Int
+  width    Int
+  height   Int
+
+  album   Album?  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  albumId String?
+}
+
+model Snippet {
+  id String @id @default(cuid())
+
+  key   String
+  value String
+
   description String?
 }

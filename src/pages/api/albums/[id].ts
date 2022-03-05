@@ -1,14 +1,12 @@
 import { validate } from '$lib/api/middleware/validate';
-import {
-  Collection,
-  UpdateCollection,
-  UpdateCollectionSchema,
-} from '$lib/api/schemas/collection';
+import { UpdateAlbum, UpdateAlbumSchema } from '$lib/api/schemas/album';
+import { Collection, UpdateCollection } from '$lib/api/schemas/collection';
 import { prisma } from '$lib/prisma';
 import { ApiResponseData, ApiResponseError, ensureQueryParam } from '$lib/util';
+import { Album } from '@prisma/client';
 
 const schemaMap = {
-  PATCH: UpdateCollectionSchema,
+  PATCH: UpdateAlbumSchema,
   DELETE: null,
 };
 
@@ -25,7 +23,7 @@ export default validate(schemaMap, async (req, res) => {
 
   switch (req.method as keyof typeof schemaMap) {
     case 'DELETE':
-      const deletedCollection = await prisma.collection.delete({
+      const deletedAlbum = await prisma.album.delete({
         where: {
           id,
         },
@@ -33,23 +31,22 @@ export default validate(schemaMap, async (req, res) => {
 
       return res
         .status(200)
-        .json({ data: deletedCollection } as ApiResponseData<Collection>);
+        .json({ data: deletedAlbum } as ApiResponseData<Album>);
     case 'PATCH':
       // fix the type. but this does not break anything so dont yell at me :(
-      const patchData = req.body as any;
-
-      const updatedCollection = await prisma.collection.update({
+      const updateData = req.body as any;
+      const updatedCollection = await prisma.album.update({
         where: {
           id,
         },
         data: {
-          ...patchData,
+          ...updateData,
           id: undefined,
         },
       });
 
       return res
         .status(200)
-        .json({ data: updatedCollection } as ApiResponseData<Collection>);
+        .json({ data: updatedCollection } as ApiResponseData<Album>);
   }
 });
