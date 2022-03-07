@@ -1,4 +1,5 @@
 import { ApiResponseError } from '$lib/util';
+import { AuthError } from '$pages/api/_middleware';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { ZodError } from 'zod';
