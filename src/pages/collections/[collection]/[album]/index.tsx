@@ -1,7 +1,9 @@
-import { AlbumWithRelations } from '$lib/api/schemas/album';
-import FileRenderer from '$lib/components/frontend/FileRenderer';
-import Footer from '$lib/components/frontend/Footer';
-import Navbar from '$lib/components/frontend/Navbar';
+import { Album, AlbumWithRelations } from '$lib/api/schemas/album';
+import { Collection } from '$lib/api/schemas/collection';
+import FileRenderer from '$lib/components/FileRenderer';
+import Footer from '$lib/components/Footer';
+import ImageCard from '$lib/components/ImageCard';
+import Navbar from '$lib/components/Navbar';
 import { prisma } from '$lib/prisma';
 import { combineClasses } from '$lib/util';
 import {
@@ -37,6 +39,7 @@ const AlbumPageParams = z.object({
 });
 
 export const getServerSideProps: GetServerSideProps<{
+  collection: Collection;
   album: AlbumWithRelations;
 }> = async ({ params }) => {
   const safeParams = AlbumPageParams.safeParse(params);
@@ -46,26 +49,27 @@ export const getServerSideProps: GetServerSideProps<{
     };
   }
 
-  const album = await prisma.album.findFirst({
+  const collection = await prisma.collection.findFirst({
     where: {
-      urlName: safeParams.data.album,
-      AND: {
-        collection: {
-          urlName: safeParams.data.collection,
-        },
-      },
+      urlName: safeParams.data.collection,
     },
     include: {
-      files: {
+      albums: {
         where: {
-          internal: false,
+          urlName: safeParams.data.album,
+        },
+        include: {
+          files: {
+            where: {
+              internal: false,
+            },
+          },
         },
       },
-      collection: true,
     },
   });
 
-  if (!album) {
+  if (!collection || collection?.albums.length === 0) {
     return {
       notFound: true,
     };
@@ -73,13 +77,14 @@ export const getServerSideProps: GetServerSideProps<{
 
   return {
     props: {
-      album: album as AlbumWithRelations,
+      collection,
+      album: collection.albums[0],
     },
   };
 };
 const CollectionAlbumPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ album }) => {
+> = ({ album, collection }) => {
   const [swiperController, setSwiperController] = useState<any>();
   const [currentSlide, setCurrentSlide] = useState(-1);
 
@@ -138,10 +143,10 @@ const CollectionAlbumPage: NextPage<
               </Link>
             </li>
             <li>
-              <Link href={`/collections/${album.collection.urlName}`}>
+              <Link href={`/collections/${collection.urlName}`}>
                 <a>
                   <FolderIcon className="w-5 h-5 mr-1"></FolderIcon>
-                  {album.collection.title}
+                  {collection.title}
                 </a>
               </Link>
             </li>

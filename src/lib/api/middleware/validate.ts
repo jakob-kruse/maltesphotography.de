@@ -1,3 +1,4 @@
+import { ApiResponse } from '$lib/util';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 
 import { errorHandler } from './error-handler';
@@ -6,7 +7,10 @@ export type ApiMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 type SchemaMap = Partial<Record<ApiMethod, any>>;
 
-export function validate(schemaMap: SchemaMap, handler: NextApiHandler) {
+export function validate<TData = any, TError = any>(
+  schemaMap: SchemaMap,
+  handler: NextApiHandler<ApiResponse<TData, TError>>
+) {
   return errorHandler(async function (
     req: NextApiRequest,
     res: NextApiResponse

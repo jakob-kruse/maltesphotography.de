@@ -4,6 +4,7 @@ import { File, UpdateFileSchema } from '$lib/api/schemas/file';
 import { prisma } from '$lib/prisma';
 import { ApiResponseData, ApiResponseError, ensureQueryParam } from '$lib/util';
 import { promises as fs } from 'fs';
+import { getSession } from 'next-auth/react';
 
 const schemaMap = {
   GET: null,
@@ -12,6 +13,17 @@ const schemaMap = {
 };
 
 export default validate(schemaMap, async (req, res) => {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return res.status(401).json({
+      error: {
+        message: 'You must be logged in to perform this action.',
+        details: null,
+      },
+    });
+  }
+
   const id = ensureQueryParam(req.query.id);
 
   if (!id) {
@@ -23,25 +35,6 @@ export default validate(schemaMap, async (req, res) => {
   }
 
   switch (req.method as keyof typeof schemaMap) {
-    case 'GET': {
-      const file = await prisma.file.findFirst({
-        where: {
-          id,
-        },
-      });
-
-      if (!file) {
-        return res.status(404).json({
-          error: {
-            message: 'File not found',
-          },
-        } as ApiResponseError);
-      }
-
-      return res.status(200).json({
-        data: file,
-      } as ApiResponseData<File>);
-    }
     case 'DELETE': {
       const deletedFile = await prisma.file.delete({
         where: {

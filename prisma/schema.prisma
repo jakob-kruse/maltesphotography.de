@@ -52,12 +52,3 @@ model File {
   album   Album?  @relation(fields: [albumId], references: [id], onDelete: Cascade)
   albumId String?
 }
-
-model Snippet {
-  id String @id @default(cuid())
-
-  key   String
-  value String
-
-  description String?
-}

@@ -1,8 +1,8 @@
 import { CollectionWithRelations } from '$lib/api/schemas/collection';
 import { File } from '$lib/api/schemas/file';
-import FileRenderer from '$lib/components/frontend/FileRenderer';
-import Footer from '$lib/components/frontend/Footer';
-import Navbar from '$lib/components/frontend/Navbar';
+import FileRenderer from '$lib/components/FileRenderer';
+import Footer from '$lib/components/Footer';
+import Navbar from '$lib/components/Navbar';
 import { prisma } from '$lib/prisma';
 import { combineClasses, ensureQueryParam } from '$lib/util';
 import { FolderIcon, FolderOpenIcon, MenuIcon } from '@heroicons/react/outline';
@@ -11,7 +11,6 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export const getServerSideProps: GetServerSideProps<{

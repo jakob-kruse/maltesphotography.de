@@ -10,6 +10,7 @@ import formidable, {
 } from 'formidable';
 import { mkdir, unlink } from 'fs/promises';
 import { IncomingMessage } from 'http';
+import { getSession } from 'next-auth/react';
 import path from 'path';
 import sharp, { Metadata, Sharp } from 'sharp';
 
@@ -28,31 +29,40 @@ const uploadDir = path.join('public', 'uploads');
 const thumbnailDir = path.join(uploadDir, 'thumbnails');
 
 export default validate(schemaMap, async (req, res) => {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return res.status(401).json({
+      error: {
+        message: 'You must be logged in to perform this action.',
+        details: null,
+      },
+    });
+  }
+
   switch (req.method as keyof typeof schemaMap) {
     case 'POST': {
-      try {
-        await mkdir(thumbnailDir, { recursive: true });
-        const { file, formFile } = await handleFileUpload(req);
+      await mkdir(thumbnailDir, { recursive: true });
+      const { file, formFile } = await handleFileUpload(req);
 
-        const sharpFile = sharp(formFile.filepath).rotate();
+      const sharpFile = sharp(formFile.filepath).rotate();
 
-        const watermarked = await addWatermark(sharpFile);
-        await watermarked.toFile(path.join(uploadDir, file.fileName));
+      const watermarked = await addWatermark(sharpFile);
+      await watermarked.toFile(path.join(uploadDir, file.fileName));
 
-        const thumbnail = sharp(path.join(uploadDir, file.fileName)).rotate();
+      const thumbnail = sharp(path.join(uploadDir, file.fileName)).rotate();
 
-        await thumbnail
-          .resize(Math.round(file.width / 24), null)
-          .sharpen()
-          .withMetadata()
-          .toFile(path.join(thumbnailDir, file.fileName));
+      await thumbnail
+        .resize(Math.round(file.width / 24), null)
+        .sharpen()
+        .withMetadata()
+        .toFile(path.join(thumbnailDir, file.fileName));
 
-        await unlink(formFile.filepath);
+      await unlink(formFile.filepath);
 
-        return res.status(200).json(file);
-      } catch (error) {
-        return res.status(400).json(error);
-      }
+      return res.status(200).json({
+        data: file,
+      });
     }
     case 'GET': {
       const files = await prisma.file.findMany();
@@ -170,7 +180,6 @@ async function getLogo() {
 }
 
 async function addWatermark(file: Sharp) {
-  const fileMeta = await file.metadata();
   const logoData = await getLogo();
 
   return file.clone().composite([

@@ -9,14 +9,17 @@ export const AlbumSchema = z
     id: z.string(),
     urlName: z.string().nullish().transform(maybeSlugify),
     title: z.string(),
-    description: z.string().min(1).nullish(),
+    description: z.string().nullish(),
     coverId: z.string().nullish(),
   })
   .strict();
 
 export type Album = z.infer<typeof AlbumSchema>;
 
-export const CreateAlbumSchema = AlbumSchema.omit({ id: true }).extend({
+export const CreateAlbumSchema = AlbumSchema.omit({
+  id: true,
+  urlName: true,
+}).extend({
   collectionId: z.string(),
 });
 
@@ -29,7 +32,6 @@ export type UpdateAlbum = z.infer<typeof UpdateAlbumSchema>;
 export const AlbumWithRelationsSchema = z.lazy(() =>
   AlbumSchema.extend({
     files: z.array(FileSchema),
-    collection: CollectionSchema,
   })
 );
 

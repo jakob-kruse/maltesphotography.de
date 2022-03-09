@@ -6,6 +6,8 @@ import {
 } from '$lib/api/schemas/collection';
 import { prisma } from '$lib/prisma';
 import { ApiResponseData, ApiResponseError, ensureQueryParam } from '$lib/util';
+import { getSession } from 'next-auth/react';
+import slugify from 'slugify';
 
 const schemaMap = {
   PATCH: UpdateCollectionSchema,
@@ -13,6 +15,17 @@ const schemaMap = {
 };
 
 export default validate(schemaMap, async (req, res) => {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return res.status(401).json({
+      error: {
+        message: 'You must be logged in to perform this action.',
+        details: null,
+      },
+    });
+  }
+
   const id = ensureQueryParam(req.query.id);
 
   if (!id) {
@@ -35,8 +48,20 @@ export default validate(schemaMap, async (req, res) => {
         .status(200)
         .json({ data: deletedCollection } as ApiResponseData<Collection>);
     case 'PATCH':
-      // fix the type. but this does not break anything so dont yell at me :(
-      const patchData = req.body as any;
+      const patchData = req.body as UpdateCollection;
+      const existing = await prisma.collection.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!existing) {
+        return res.status(404).json({
+          error: {
+            message: 'Collection not found',
+          },
+        } as ApiResponseError);
+      }
 
       const updatedCollection = await prisma.collection.update({
         where: {
@@ -44,6 +69,7 @@ export default validate(schemaMap, async (req, res) => {
         },
         data: {
           ...patchData,
+          urlName: slugify(patchData.title || existing.title, { lower: true }),
           id: undefined,
         },
       });

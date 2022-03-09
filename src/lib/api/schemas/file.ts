@@ -1,7 +1,7 @@
 import { maybeSlugify } from '$lib/util';
 import { z } from 'zod';
 
-import { AlbumSchema } from './album';
+import { Album, AlbumSchema, AlbumWithRelations } from './album';
 
 export const FileSchema = z
   .object({
@@ -35,11 +35,3 @@ export type CreateFile = z.infer<typeof CreateFileSchema>;
 export const UpdateFileSchema = CreateFileSchema.partial();
 
 export type UpdateFile = z.infer<typeof UpdateFileSchema>;
-
-export const FileWithRelationsSchema = z.lazy(() =>
-  FileSchema.extend({
-    album: AlbumSchema,
-  })
-);
-
-export type FileWithRelations = z.infer<typeof FileWithRelationsSchema>;

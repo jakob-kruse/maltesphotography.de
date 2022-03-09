@@ -1,8 +1,8 @@
 import { Collection } from '$lib/api/schemas/collection';
 import { File } from '$lib/api/schemas/file';
-import FileRenderer from '$lib/components/frontend/FileRenderer';
-import Footer from '$lib/components/frontend/Footer';
-import Navbar from '$lib/components/frontend/Navbar';
+import FileRenderer from '$lib/components/FileRenderer';
+import Footer from '$lib/components/Footer';
+import Navbar from '$lib/components/Navbar';
 import { prisma } from '$lib/prisma';
 import { combineClasses } from '$lib/util';
 import { FolderIcon, FolderOpenIcon } from '@heroicons/react/outline';

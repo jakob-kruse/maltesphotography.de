@@ -2,6 +2,7 @@ import { validate } from '$lib/api/middleware/validate';
 import { Album, CreateAlbum, CreateAlbumSchema } from '$lib/api/schemas/album';
 import { prisma } from '$lib/prisma';
 import { ApiResponseData, ApiResponseError } from '$lib/util';
+import { getSession } from 'next-auth/react';
 import slugify from 'slugify';
 
 const schemaMap = {
@@ -10,18 +11,25 @@ const schemaMap = {
 };
 
 export default validate(schemaMap, async (req, res) => {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return res.status(401).json({
+      error: {
+        message: 'You must be logged in to perform this action.',
+        details: null,
+      },
+    });
+  }
+
   switch (req.method as keyof typeof schemaMap) {
     case 'POST': {
       const postData = req.body as CreateAlbum;
-      if (!postData.urlName) {
-        postData.urlName = slugify(postData.title, {
-          lower: true,
-        });
-      }
+      const urlName = slugify(postData.title, { lower: true });
 
       const existingAlbum = await prisma.album.findFirst({
         where: {
-          urlName: postData.urlName,
+          urlName,
         },
       });
 
@@ -30,6 +38,7 @@ export default validate(schemaMap, async (req, res) => {
           error: {
             message:
               'Album with this url name / title already exists. Please provide your own urlName or choose a different title',
+            details: null,
           },
         });
       }
@@ -51,7 +60,10 @@ export default validate(schemaMap, async (req, res) => {
       }
 
       const album = await prisma.album.create({
-        data: postData as CreateAlbum & { urlName: string },
+        data: {
+          ...postData,
+          urlName,
+        },
       });
 
       return res.status(200).json({ data: album } as ApiResponseData<Album>);

@@ -1,4 +1,4 @@
-import Navbar from '$lib/components/frontend/Navbar';
+import Navbar from '$lib/components/Navbar';
 
 const ImprintPage = () => {
   return (

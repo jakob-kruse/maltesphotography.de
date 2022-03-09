@@ -20,8 +20,8 @@ const Footer: FC = () => {
         <Link href="https://www.youtube.com/channel/UCew0fMSDrj2tiOCtBO9MfPw">
           <a className="link link-hover">Youtube</a>
         </Link>
-        <Link href="https://www.facebook.com/maltes_photography-108059430670518/">
-          <a className="link link-hover">Facebook</a>
+        <Link href="https://www.flickr.com/photos/maltes_photography">
+          <a className="link link-hover">Flickr</a>
         </Link>
       </div>
 

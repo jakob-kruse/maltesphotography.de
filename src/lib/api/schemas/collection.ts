@@ -1,5 +1,4 @@
 import { maybeSlugify } from '$lib/util';
-import slugify from 'slugify';
 import { z } from 'zod';
 
 import { AlbumSchema } from './album';
@@ -7,15 +6,19 @@ import { AlbumSchema } from './album';
 export const CollectionSchema = z
   .object({
     id: z.string(),
-    urlName: z.string().transform(maybeSlugify),
-    title: z.string(),
+    title: z.string().min(1),
+    urlName: z.string().min(1).transform(maybeSlugify),
     description: z.string().nullish(),
+    coverId: z.string().min(1).nullish(),
   })
   .strict();
 
 export type Collection = z.infer<typeof CollectionSchema>;
 
-export const CreateCollectionSchema = CollectionSchema.omit({ id: true });
+export const CreateCollectionSchema = CollectionSchema.omit({
+  id: true,
+  urlName: true,
+});
 
 export type CreateCollection = z.infer<typeof CreateCollectionSchema>;
 
