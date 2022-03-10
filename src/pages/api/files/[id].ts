@@ -1,10 +1,10 @@
 import { validate } from '$lib/api/middleware/validate';
-import { UpdateCollection } from '$lib/api/schemas/collection';
-import { File, UpdateFileSchema } from '$lib/api/schemas/file';
+import { File, UpdateFile, UpdateFileSchema } from '$lib/api/schemas/file';
 import { prisma } from '$lib/prisma';
 import { ApiResponseData, ApiResponseError, ensureQueryParam } from '$lib/util';
 import { promises as fs } from 'fs';
 import { getSession } from 'next-auth/react';
+import slugify from 'slugify';
 
 const schemaMap = {
   GET: null,
@@ -57,15 +57,29 @@ export default validate(schemaMap, async (req, res) => {
         .json({ data: deletedFile } as ApiResponseData<File>);
     }
     case 'PATCH': {
-      // fix the type. but this does not break anything so dont yell at me :(
-      const updateData = req.body as any;
+      const patchData = req.body as UpdateFile;
+
+      const existing = await prisma.file.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!existing) {
+        return res.status(404).json({
+          error: {
+            message: 'File not found',
+          },
+        } as ApiResponseError);
+      }
 
       const updatedCollection = await prisma.file.update({
         where: {
           id,
         },
         data: {
-          ...updateData,
+          ...patchData,
+          urlName: slugify(patchData.title || existing.title, { lower: true }),
           id: undefined,
         },
       });

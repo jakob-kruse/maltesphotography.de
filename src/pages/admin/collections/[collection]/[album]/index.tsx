@@ -1,21 +1,14 @@
 import { Album, AlbumWithRelations, UpdateAlbum } from '$lib/api/schemas/album';
-import {
-  Collection,
-  CollectionWithRelations,
-  UpdateCollection,
-} from '$lib/api/schemas/collection';
-import { File } from '$lib/api/schemas/file';
+import { CollectionWithRelations } from '$lib/api/schemas/collection';
 import FileRenderer from '$lib/components/FileRenderer';
 import { client } from '$lib/http';
 import { prisma } from '$lib/prisma';
 import { ApiResponseData } from '$lib/util';
-import albums from '$pages/api/albums';
 import {
   ArrowLeftIcon,
   DotsVerticalIcon,
   PlusIcon,
 } from '@heroicons/react/outline';
-import { errors } from 'formidable';
 import {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -25,8 +18,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { register } from 'ts-node';
-import { isDirty, z } from 'zod';
+import { z } from 'zod';
 
 import { collectionQueryParams } from '..';
 
@@ -57,6 +49,7 @@ export const getServerSideProps: GetServerSideProps<{
         include: {
           collection: true,
           files: true,
+          cover: true,
         },
       },
     },
@@ -94,7 +87,7 @@ const AdminCollectionAlbumPage: NextPage<
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields, isDirty },
+    formState: { errors, isDirty },
   } = useForm<UpdateAlbum>({
     defaultValues: {
       title: album.title,
@@ -127,30 +120,52 @@ const AdminCollectionAlbumPage: NextPage<
     }
   }
 
+  async function setCover(fileId: string, ofCollection: boolean) {
+    const url = ofCollection
+      ? `collections/${collection.id}`
+      : `albums/${album.id}`;
+    await client.patch(url, {
+      json: {
+        coverId: fileId,
+      },
+    });
+
+    router.reload();
+  }
+
   return (
     <>
       <div className="container mx-auto">
         <div className="my-6">
           <Link href={`/admin/collections/${collection.urlName}`}>
-            <a className="font-mono uppercase flex items-center gap-2 btn btn-circle btn-sm">
+            <a className="flex items-center gap-2 font-mono uppercase btn btn-circle btn-sm">
               <ArrowLeftIcon className="w-4 h-4"></ArrowLeftIcon>
             </a>
           </Link>
         </div>
         <Link href={`/collections/${collection.urlName}/${album.urlName}`}>
-          <a className="badge my-2">
+          <a className="my-2 badge">
             /collections/{collection.urlName}/{album.urlName}
           </a>
         </Link>
 
-        <h1 className="text-2xl font-bold mb-4 flex items-center gap-4">
+        <h1 className="flex items-center gap-4 mb-4 text-2xl font-bold">
           {album.title}
         </h1>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="card card-bordered form-control shadow-sm gap-2"
+          className="gap-2 mb-8 shadow-sm card card-bordered form-control"
         >
+          {album.cover && (
+            <figure className="bg-base-300">
+              <FileRenderer
+                file={album.cover}
+                alt={`Cover of ${album.title}`}
+                objectFit="contain"
+              ></FileRenderer>
+            </figure>
+          )}
           <div className="card-body">
             <h2 className="card-title">Basic information</h2>
 
@@ -163,7 +178,7 @@ const AdminCollectionAlbumPage: NextPage<
               {...register('title')}
             />
             {errors.title && (
-              <span className="text-error text-sm">{errors.title.message}</span>
+              <span className="text-sm text-error">{errors.title.message}</span>
             )}
 
             <label className="label">
@@ -176,12 +191,12 @@ const AdminCollectionAlbumPage: NextPage<
             />
 
             {errors.description && (
-              <span className="text-error text-sm">
+              <span className="text-sm text-error">
                 {errors.description.message}
               </span>
             )}
 
-            <div className="card-actions justify-end">
+            <div className="justify-end card-actions">
               <button type="submit" className="btn" disabled={!isDirty}>
                 Save
               </button>
@@ -189,10 +204,10 @@ const AdminCollectionAlbumPage: NextPage<
           </div>
         </form>
 
-        <div className="overflow-x-auto w-full card card-bordered shadow-sm">
+        <div className="w-full overflow-auto shadow-sm card card-bordered">
           <div className="card-body">
             <h2 className="card-title">Files</h2>
-            <table className="table w-full h-ful mb-16">
+            <table className="table w-full mb-16 h-ful">
               <thead>
                 <tr>
                   <th>Title</th>
@@ -209,40 +224,52 @@ const AdminCollectionAlbumPage: NextPage<
                 </tr>
               </thead>
               <tbody>
-                {files.map((file) => (
-                  <tr key={file.id}>
-                    <td>
-                      <Link
-                        href={`/admin/collections/${collection.urlName}/${album.urlName}/${file.urlName}`}
-                      >
-                        {file.title}
-                      </Link>
-                    </td>
-                    <td>{file.urlName}</td>
-                    <td>
-                      <div className="dropdown dropdown-left">
-                        <button className="btn btn-square btn-ghost">
-                          <DotsVerticalIcon className="w-5 h-5"></DotsVerticalIcon>
-                        </button>
-                        <ul
-                          tabIndex={0}
-                          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+                {files.length === 0 ? (
+                  <div className="py-3 pl-2">
+                    <p>No files yet</p>
+                  </div>
+                ) : (
+                  files.map((file) => (
+                    <tr key={file.id}>
+                      <td>
+                        <Link
+                          href={`/admin/collections/${collection.urlName}/${album.urlName}/${file.urlName}`}
                         >
-                          <li>
-                            <Link
-                              href={`/admin/collections/${collection.urlName}/${album.urlName}/${file.urlName}`}
-                            >
-                              <a>Edit</a>
-                            </Link>
-                          </li>
-                          <li onClick={() => deleteFile(file.id)}>
-                            <a>Delete</a>
-                          </li>
-                        </ul>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          {file.title}
+                        </Link>
+                      </td>
+                      <td>{file.urlName}</td>
+                      <td>
+                        <div className="dropdown dropdown-left">
+                          <button className="btn btn-square btn-ghost">
+                            <DotsVerticalIcon className="w-5 h-5"></DotsVerticalIcon>
+                          </button>
+                          <ul
+                            tabIndex={0}
+                            className="z-10 p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52"
+                          >
+                            <li>
+                              <Link
+                                href={`/admin/collections/${collection.urlName}/${album.urlName}/${file.urlName}`}
+                              >
+                                <a>Edit</a>
+                              </Link>
+                            </li>
+                            <li onClick={() => deleteFile(file.id)}>
+                              <a>Delete</a>
+                            </li>
+                            <li onClick={() => setCover(file.id, false)}>
+                              <a>Set Album Cover</a>
+                            </li>
+                            <li onClick={() => setCover(file.id, true)}>
+                              <a>Set Collection Cover</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

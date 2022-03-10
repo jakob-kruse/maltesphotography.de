@@ -1,17 +1,8 @@
-import {
-  Collection,
-  CreateCollection,
-  CreateCollectionSchema,
-} from '$lib/api/schemas/collection';
+import { Collection, CreateCollection } from '$lib/api/schemas/collection';
 import { client } from '$lib/http';
-import { ApiResponse, ApiResponseData, setErrors } from '$lib/util';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { HTTPError } from 'ky';
+import { ApiResponseData } from '$lib/util';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import slugify from 'slugify';
-import { ZodError } from 'zod';
 
 const AdminCreateCollectionPage = () => {
   const router = useRouter();
@@ -38,7 +29,7 @@ const AdminCreateCollectionPage = () => {
     <div className="container mx-auto">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="card card-bordered form-control shadow-sm gap-2"
+        className="gap-2 shadow-sm card card-bordered form-control"
       >
         <div className="card-body">
           <h2 className="card-title">Create collection</h2>
@@ -51,7 +42,7 @@ const AdminCreateCollectionPage = () => {
             {...register('title')}
           />
           {errors.title && (
-            <span className="text-error text-sm">{errors.title.message}</span>
+            <span className="text-sm text-error">{errors.title.message}</span>
           )}
 
           <label className="label">
@@ -64,12 +55,12 @@ const AdminCreateCollectionPage = () => {
           />
 
           {errors.description && (
-            <span className="text-error text-sm">
+            <span className="text-sm text-error">
               {errors.description.message}
             </span>
           )}
 
-          <div className="card-actions justify-end">
+          <div className="justify-end card-actions">
             <button type="submit" className="btn">
               Create
             </button>

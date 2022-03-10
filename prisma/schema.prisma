@@ -14,9 +14,11 @@ model Collection {
 
   title       String
   description String?
-  coverId     String?
 
-  albums Album[]
+  albums Album[] @relation("AlbumToCollection")
+
+  cover   File?   @relation("CollectionToCover", fields: [coverId], references: [id])
+  coverId String?
 }
 
 model Album {
@@ -25,12 +27,14 @@ model Album {
 
   title       String
   description String?
-  coverId     String?
 
-  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade, name: "AlbumToCollection")
   collectionId String?
 
-  files File[]
+  files File[] @relation("FileToAlbum")
+
+  cover   File?   @relation("AlbumToCover", fields: [coverId], references: [id])
+  coverId String?
 }
 
 model File {
@@ -41,7 +45,7 @@ model File {
 
   description String?
 
-  internal Boolean @default(false)
+  featured Boolean @default(false)
 
   mimeType String
   fileName String
@@ -49,6 +53,9 @@ model File {
   width    Int
   height   Int
 
-  album   Album?  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  album   Album?  @relation(fields: [albumId], references: [id], onDelete: Cascade, name: "FileToAlbum")
   albumId String?
+
+  coverOfCollections Collection[] @relation("CollectionToCover")
+  coverOfAlbums      Album[]      @relation("AlbumToCover")
 }

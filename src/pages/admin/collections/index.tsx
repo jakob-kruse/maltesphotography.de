@@ -5,7 +5,6 @@ import { DotsVerticalIcon } from '@heroicons/react/outline';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import { useState } from 'react';
-import { z } from 'zod';
 
 export const getServerSideProps: GetServerSideProps<{
   collections: Collection[];
@@ -38,15 +37,15 @@ const CollectionIndexPage = ({
 
   return (
     <div className="container mx-auto">
-      <div className="flex justify-between items-center my-4">
+      <div className="flex items-center justify-between my-4">
         <h1 className="text-2xl font-bold">Collections</h1>
         <Link href={`/admin/collections/create`}>
           <a className="btn">New</a>
         </Link>
       </div>
 
-      <div className="overflow-x-auto w-full">
-        <table className="table w-full h-ful mb-16">
+      <div className="w-full overflow-x-auto">
+        <table className="table w-full mb-16 h-ful">
           <thead>
             <tr>
               <th>Title</th>
@@ -55,38 +54,46 @@ const CollectionIndexPage = ({
             </tr>
           </thead>
           <tbody>
-            {collections.map((collection) => (
-              <tr key={collection.id}>
-                <td>
-                  <Link href={`/admin/collections/${collection.urlName}`}>
-                    {collection.title}
-                  </Link>
-                </td>
-                <td>{collection.urlName}</td>
-                <td className="w-[1%]">
-                  <div className="dropdown dropdown-left">
-                    <button className="btn btn-square btn-ghost">
-                      <DotsVerticalIcon className="w-5 h-5"></DotsVerticalIcon>
-                    </button>
-                    <ul
-                      tabIndex={0}
-                      className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-                    >
-                      <li>
-                        <Link href={`/admin/collections/${collection.urlName}`}>
-                          <a>Edit</a>
-                        </Link>
-                      </li>
-                      <li>
-                        <a onClick={() => deleteCollection(collection.id)}>
-                          Delete
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {collections.length === 0 ? (
+              <div className="py-3 pl-2">
+                <p>No collections yet</p>
+              </div>
+            ) : (
+              collections.map((collection) => (
+                <tr key={collection.id}>
+                  <td>
+                    <Link href={`/admin/collections/${collection.urlName}`}>
+                      {collection.title}
+                    </Link>
+                  </td>
+                  <td>{collection.urlName}</td>
+                  <td className="w-[1%]">
+                    <div className="dropdown dropdown-left">
+                      <button className="btn btn-square btn-ghost">
+                        <DotsVerticalIcon className="w-5 h-5"></DotsVerticalIcon>
+                      </button>
+                      <ul
+                        tabIndex={0}
+                        className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52"
+                      >
+                        <li>
+                          <Link
+                            href={`/admin/collections/${collection.urlName}`}
+                          >
+                            <a>Edit</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <a onClick={() => deleteCollection(collection.id)}>
+                            Delete
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

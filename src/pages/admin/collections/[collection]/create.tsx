@@ -2,7 +2,7 @@ import { Album, CreateAlbum } from '$lib/api/schemas/album';
 import { Collection, CreateCollection } from '$lib/api/schemas/collection';
 import { client } from '$lib/http';
 import { prisma } from '$lib/prisma';
-import { ApiResponseData, ensureQueryParam } from '$lib/util';
+import { ApiResponseData } from '$lib/util';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -74,7 +74,7 @@ const AdminCreateAlbumPage = ({
     <div className="container mx-auto">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="card card-bordered form-control shadow-sm gap-2"
+        className="gap-2 shadow-sm card card-bordered form-control"
       >
         <div className="card-body">
           <h2 className="card-title">Create album in {collection.title}</h2>
@@ -87,7 +87,7 @@ const AdminCreateAlbumPage = ({
             {...register('title')}
           />
           {errors.title && (
-            <span className="text-error text-sm">{errors.title.message}</span>
+            <span className="text-sm text-error">{errors.title.message}</span>
           )}
 
           <label className="label">
@@ -100,12 +100,12 @@ const AdminCreateAlbumPage = ({
           />
 
           {errors.description && (
-            <span className="text-error text-sm">
+            <span className="text-sm text-error">
               {errors.description.message}
             </span>
           )}
 
-          <div className="card-actions justify-end">
+          <div className="justify-end card-actions">
             <button type="submit" className="btn">
               Create
             </button>

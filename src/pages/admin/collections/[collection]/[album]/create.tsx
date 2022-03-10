@@ -1,16 +1,14 @@
-import { AlbumWithRelations, CreateAlbum } from '$lib/api/schemas/album';
+import { AlbumWithRelations } from '$lib/api/schemas/album';
 import {
   CollectionWithRelations,
   CreateCollection,
 } from '$lib/api/schemas/collection';
 import { client } from '$lib/http';
 import { prisma } from '$lib/prisma';
-import { ensureQueryParam } from '$lib/util';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 import { albumQueryParams } from '.';
 
@@ -110,7 +108,7 @@ const AdminCreateFilePage = ({
     <div className="container mx-auto">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="card card-bordered form-control shadow-sm gap-2"
+        className="gap-2 shadow-sm card card-bordered form-control"
       >
         <div className="card-body">
           <h2 className="card-title">Create file in {album.title}</h2>
@@ -123,7 +121,7 @@ const AdminCreateFilePage = ({
             {...register('title')}
           />
           {errors.title && (
-            <span className="text-error text-sm">{errors.title.message}</span>
+            <span className="text-sm text-error">{errors.title.message}</span>
           )}
 
           <label className="label">
@@ -136,7 +134,7 @@ const AdminCreateFilePage = ({
           />
 
           {errors.description && (
-            <span className="text-error text-sm">
+            <span className="text-sm text-error">
               {errors.description.message}
             </span>
           )}
@@ -148,7 +146,7 @@ const AdminCreateFilePage = ({
             onChange={onChangeFile}
           />
 
-          <div className="card-actions justify-end">
+          <div className="justify-end card-actions">
             <button type="submit" className="btn">
               Create
             </button>

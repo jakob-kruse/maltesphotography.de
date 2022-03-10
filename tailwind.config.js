@@ -9,6 +9,11 @@ module.exports = {
       },
     },
   },
+  darkMode: 'class',
+  daisyui: {
+    themes: ['light', 'halloween'],
+    darkTheme: 'halloween',
+  },
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),

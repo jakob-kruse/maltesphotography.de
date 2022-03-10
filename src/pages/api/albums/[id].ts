@@ -1,6 +1,5 @@
 import { validate } from '$lib/api/middleware/validate';
 import { UpdateAlbum, UpdateAlbumSchema } from '$lib/api/schemas/album';
-import { Collection, UpdateCollection } from '$lib/api/schemas/collection';
 import { prisma } from '$lib/prisma';
 import { ApiResponseData, ApiResponseError, ensureQueryParam } from '$lib/util';
 import { Album } from '@prisma/client';

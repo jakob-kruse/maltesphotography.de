@@ -1,6 +1,4 @@
-import { Collection } from '$lib/api/schemas/collection';
-import { prisma } from '$lib/prisma';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 
 export const getServerSideProps: GetServerSideProps = async () => {

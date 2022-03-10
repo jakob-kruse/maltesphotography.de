@@ -1,7 +1,7 @@
 import { validate } from '$lib/api/middleware/validate';
 import { Album, CreateAlbum, CreateAlbumSchema } from '$lib/api/schemas/album';
 import { prisma } from '$lib/prisma';
-import { ApiResponseData, ApiResponseError } from '$lib/util';
+import { ApiResponseData } from '$lib/util';
 import { getSession } from 'next-auth/react';
 import slugify from 'slugify';
 
@@ -41,22 +41,6 @@ export default validate(schemaMap, async (req, res) => {
             details: null,
           },
         });
-      }
-
-      if (postData.coverId) {
-        const cover = await prisma.file.findFirst({
-          where: {
-            id: postData.coverId,
-          },
-        });
-
-        if (!cover) {
-          return res.status(400).json({
-            error: {
-              message: 'Cover file not found',
-            },
-          } as ApiResponseError);
-        }
       }
 
       const album = await prisma.album.create({

@@ -7,7 +7,14 @@ const FileRenderer: FC<{
   alt?: string;
   layout?: 'fill' | 'fixed' | 'intrinsic' | 'responsive';
   objectFit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
-}> = ({ file, alt, layout = 'intrinsic', objectFit = 'none' }) => {
+  className?: string;
+}> = ({
+  file,
+  alt,
+  layout = 'intrinsic',
+  objectFit = 'none',
+  className = undefined,
+}) => {
   return (
     <Image
       src={`/uploads/${file.fileName}`}
@@ -18,6 +25,7 @@ const FileRenderer: FC<{
       alt={alt || file.title}
       layout={layout}
       objectFit={objectFit}
+      className={className}
     />
   );
 };

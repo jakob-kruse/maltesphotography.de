@@ -4,10 +4,16 @@ import { FC } from 'react';
 
 const Footer: FC = () => {
   return (
-    <footer className="footer p-10 text-base-content container mx-auto">
-      <div>
+    <footer className="container p-10 mx-auto footer text-base-content">
+      <div className="leading-loose">
         <Image src="/svg/Logo.svg" width={64} height={64} alt="Logo"></Image>
         <p>maltesphotography.de</p>
+        <p className="text-xs">
+          Website by
+          <Link href="https://github.com/jakob-kruse">
+            <a className="text-accent"> Jakob Kruse</a>
+          </Link>
+        </p>
       </div>
       <div>
         <span className="footer-title">Social Media</span>

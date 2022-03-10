@@ -4,9 +4,10 @@ import {
   UpdateCollection,
 } from '$lib/api/schemas/collection';
 import { File } from '$lib/api/schemas/file';
+import FileRenderer from '$lib/components/FileRenderer';
 import { client } from '$lib/http';
 import { prisma } from '$lib/prisma';
-import { ApiResponseData, ensureQueryParam } from '$lib/util';
+import { ApiResponseData } from '$lib/util';
 import {
   ArrowLeftIcon,
   DotsVerticalIcon,
@@ -29,7 +30,6 @@ export const collectionQueryParams = z.object({
 
 export const getServerSideProps: GetServerSideProps<{
   collection: CollectionWithRelations;
-  covers: Record<string, File | null>;
 }> = async ({ query }) => {
   const validationResult = await collectionQueryParams.safeParse(query);
 
@@ -47,6 +47,7 @@ export const getServerSideProps: GetServerSideProps<{
     },
     include: {
       albums: true,
+      cover: true,
     },
   });
 
@@ -56,37 +57,23 @@ export const getServerSideProps: GetServerSideProps<{
     };
   }
 
-  const covers: Record<string, File | null> = {};
-
-  for (const album of collection.albums) {
-    if (album.coverId) {
-      covers[album.id] = await prisma.file.findFirst({
-        where: {
-          id: album.coverId,
-          internal: false,
-        },
-      });
-    }
-  }
-
   return {
     props: {
       collection,
-      covers,
     },
   };
 };
 
 const AdminCollectionPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ collection, covers }) => {
+> = ({ collection }) => {
   const [albums, setAlbums] = useState(collection.albums);
 
   const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields, isDirty },
+    formState: { errors, isDirty },
   } = useForm<UpdateCollection>({
     defaultValues: {
       title: collection.title,
@@ -121,23 +108,32 @@ const AdminCollectionPage: NextPage<
       <div className="container mx-auto">
         <div className="my-6">
           <Link href="/admin/collections">
-            <a className="font-mono uppercase flex items-center gap-2 btn btn-circle btn-sm">
+            <a className="flex items-center gap-2 font-mono uppercase btn btn-circle btn-sm">
               <ArrowLeftIcon className="w-4 h-4"></ArrowLeftIcon>
             </a>
           </Link>
         </div>
         <Link href={`/collections/${collection.urlName}`}>
-          <a className="badge my-2">/collections/{collection.urlName}</a>
+          <a className="my-2 badge">/collections/{collection.urlName}</a>
         </Link>
 
-        <h1 className="text-2xl font-bold mb-4 flex items-center gap-4">
+        <h1 className="flex items-center gap-4 mb-4 text-2xl font-bold">
           {collection.title}
         </h1>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="card card-bordered form-control shadow-sm gap-2"
+          className="gap-2 mb-8 shadow-sm card card-bordered form-control"
         >
+          {collection.cover && (
+            <figure className="bg-base-300">
+              <FileRenderer
+                file={collection.cover}
+                alt={`Cover of ${collection.title}`}
+                objectFit="contain"
+              ></FileRenderer>
+            </figure>
+          )}
           <div className="card-body">
             <h2 className="card-title">Basic information</h2>
 
@@ -150,7 +146,7 @@ const AdminCollectionPage: NextPage<
               {...register('title')}
             />
             {errors.title && (
-              <span className="text-error text-sm">{errors.title.message}</span>
+              <span className="text-sm text-error">{errors.title.message}</span>
             )}
 
             <label className="label">
@@ -163,12 +159,12 @@ const AdminCollectionPage: NextPage<
             />
 
             {errors.description && (
-              <span className="text-error text-sm">
+              <span className="text-sm text-error">
                 {errors.description.message}
               </span>
             )}
 
-            <div className="card-actions justify-end">
+            <div className="justify-end card-actions">
               <button type="submit" className="btn" disabled={!isDirty}>
                 Save
               </button>
@@ -176,10 +172,10 @@ const AdminCollectionPage: NextPage<
           </div>
         </form>
 
-        <div className="overflow-x-auto w-full card card-bordered shadow-sm">
+        <div className="w-full overflow-x-auto shadow-sm card card-bordered">
           <div className="card-body">
             <h2 className="card-title">Albums</h2>
-            <table className="table w-full h-ful mb-16">
+            <table className="table w-full mb-16 h-ful">
               <thead>
                 <tr>
                   <th>Title</th>
@@ -196,40 +192,46 @@ const AdminCollectionPage: NextPage<
                 </tr>
               </thead>
               <tbody>
-                {albums.map((album) => (
-                  <tr key={album.id}>
-                    <td>
-                      <Link
-                        href={`/admin/collections/${collection.urlName}/${album.urlName}`}
-                      >
-                        {album.title}
-                      </Link>
-                    </td>
-                    <td>{album.urlName}</td>
-                    <td>
-                      <div className="dropdown dropdown-left">
-                        <button className="btn btn-square btn-ghost">
-                          <DotsVerticalIcon className="w-5 h-5"></DotsVerticalIcon>
-                        </button>
-                        <ul
-                          tabIndex={0}
-                          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+                {albums.length === 0 ? (
+                  <div className="py-3 pl-2">
+                    <p>No albums yet</p>
+                  </div>
+                ) : (
+                  albums.map((album) => (
+                    <tr key={album.id}>
+                      <td>
+                        <Link
+                          href={`/admin/collections/${collection.urlName}/${album.urlName}`}
                         >
-                          <li>
-                            <Link
-                              href={`/admin/collections/${collection.urlName}/${album.urlName}`}
-                            >
-                              <a>Edit</a>
-                            </Link>
-                          </li>
-                          <li onClick={() => deleteAlbum(album.id)}>
-                            <a>Delete</a>
-                          </li>
-                        </ul>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          {album.title}
+                        </Link>
+                      </td>
+                      <td>{album.urlName}</td>
+                      <td>
+                        <div className="dropdown dropdown-left">
+                          <button className="btn btn-square btn-ghost">
+                            <DotsVerticalIcon className="w-5 h-5"></DotsVerticalIcon>
+                          </button>
+                          <ul
+                            tabIndex={0}
+                            className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52"
+                          >
+                            <li>
+                              <Link
+                                href={`/admin/collections/${collection.urlName}/${album.urlName}`}
+                              >
+                                <a>Edit</a>
+                              </Link>
+                            </li>
+                            <li onClick={() => deleteAlbum(album.id)}>
+                              <a>Delete</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

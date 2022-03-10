@@ -1,11 +1,10 @@
-import { Collection } from '$lib/api/schemas/collection';
-import { File } from '$lib/api/schemas/file';
+import { CollectionWithRelations } from '$lib/api/schemas/collection';
 import FileRenderer from '$lib/components/FileRenderer';
 import Footer from '$lib/components/Footer';
 import Navbar from '$lib/components/Navbar';
 import { prisma } from '$lib/prisma';
 import { combineClasses } from '$lib/util';
-import { FolderIcon, FolderOpenIcon } from '@heroicons/react/outline';
+import { FolderOpenIcon } from '@heroicons/react/outline';
 import {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -14,40 +13,29 @@ import {
 import Link from 'next/link';
 
 export const getServerSideProps: GetServerSideProps<{
-  collections: Collection[];
-  covers: Record<string, File | null>;
+  collections: CollectionWithRelations[];
 }> = async () => {
-  const collections = await prisma.collection.findMany();
-
-  const covers: Record<string, File | null> = {};
-
-  for (const collection of collections) {
-    if (collection.coverId) {
-      covers[collection.id] = await prisma.file.findFirst({
-        where: {
-          id: collection.coverId,
-          internal: false,
-        },
-      });
-    }
-  }
+  const collections = (await prisma.collection.findMany({
+    include: {
+      cover: true,
+    },
+  })) as unknown as CollectionWithRelations[];
 
   return {
     props: {
       collections,
-      covers,
     },
   };
 };
 
 const CollectionsPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ collections, covers }) => {
+> = ({ collections }) => {
   return (
     <>
       <Navbar />
 
-      <div className="container mx-auto space-y-4 px-8 min-h-screen">
+      <div className="container min-h-screen px-8 mx-auto space-y-4">
         <div className="text-sm breadcrumbs">
           <ul>
             <li>
@@ -57,7 +45,7 @@ const CollectionsPage: NextPage<
           </ul>
         </div>
 
-        <h1 className="text-6xl pb-6 text-neutral font-bold">Collections</h1>
+        <h1 className="pb-6 text-6xl font-bold">Collections</h1>
         <div
           className={combineClasses(
             'grid grid-cols-1 gap-4',
@@ -68,21 +56,21 @@ const CollectionsPage: NextPage<
           {collections.map((collection) => (
             <div
               className={`card bg-base-100 text-white min-h-[256px] shadow-sm hover:shadow-md ${
-                !!covers[collection.id] ? 'image-full' : 'bg-neutral'
+                collection.cover ? 'image-full' : 'bg-neutral'
               }`}
               key={collection.id}
             >
-              {covers[collection.id] && (
+              {collection.cover && (
                 <figure className="w-1/2">
                   <FileRenderer
-                    file={covers[collection.id]!}
+                    file={collection.cover!}
                     alt={`Cover of ${collection.title}`}
                     layout="fill"
                   ></FileRenderer>
                 </figure>
               )}
               <div className="card-body">
-                <h2 className="card-title text-2xl">
+                <h2 className="text-2xl card-title">
                   <Link href={`/collections/${collection.urlName}`}>
                     {collection.title}
                   </Link>
@@ -90,7 +78,7 @@ const CollectionsPage: NextPage<
                 <p className="font-light text-gray-300">
                   {collection.description || 'No description'}
                 </p>
-                <div className="card-actions justify-end">
+                <div className="justify-end card-actions">
                   <Link href={`/collections/${collection.urlName}`}>
                     <a className="btn btn-primary">View</a>
                   </Link>

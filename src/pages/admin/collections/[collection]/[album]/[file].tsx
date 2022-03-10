@@ -1,17 +1,13 @@
-import { AlbumWithRelations, CreateAlbum } from '$lib/api/schemas/album';
-import {
-  CollectionWithRelations,
-  CreateCollection,
-} from '$lib/api/schemas/collection';
+import { AlbumWithRelations } from '$lib/api/schemas/album';
+import { CollectionWithRelations } from '$lib/api/schemas/collection';
 import { File, UpdateFile } from '$lib/api/schemas/file';
+import FileRenderer from '$lib/components/FileRenderer';
 import { client } from '$lib/http';
 import { prisma } from '$lib/prisma';
-import { ensureQueryParam } from '$lib/util';
 import { ArrowLeftIcon } from '@heroicons/react/outline';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FormEvent, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { isDirty, z } from 'zod';
 
@@ -114,20 +110,25 @@ const AdminViewFilePage = ({
           <Link
             href={`/admin/collections/${collection.urlName}/${album.urlName}`}
           >
-            <a className="font-mono uppercase flex items-center gap-2 btn btn-circle btn-sm">
+            <a className="flex items-center gap-2 font-mono uppercase btn btn-circle btn-sm">
               <ArrowLeftIcon className="w-4 h-4"></ArrowLeftIcon>
             </a>
           </Link>
         </div>
 
-        <h1 className="text-2xl font-bold mb-4 flex items-center gap-4">
+        <h1 className="flex items-center gap-4 mb-4 text-2xl font-bold ">
           {file.title}
         </h1>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="card card-bordered form-control shadow-sm gap-2"
+          className="gap-2 shadow-sm card card-bordered form-control"
         >
+          {file && (
+            <figure>
+              <FileRenderer file={file}></FileRenderer>
+            </figure>
+          )}
           <div className="card-body">
             <h2 className="card-title">Basic information</h2>
 
@@ -140,7 +141,7 @@ const AdminViewFilePage = ({
               {...register('title')}
             />
             {errors.title && (
-              <span className="text-error text-sm">{errors.title.message}</span>
+              <span className="text-sm text-error">{errors.title.message}</span>
             )}
 
             <label className="label">
@@ -153,12 +154,12 @@ const AdminViewFilePage = ({
             />
 
             {errors.description && (
-              <span className="text-error text-sm">
+              <span className="text-sm text-error">
                 {errors.description.message}
               </span>
             )}
 
-            <div className="card-actions justify-end">
+            <div className="justify-end card-actions">
               <button type="submit" className="btn" disabled={!isDirty}>
                 Save
               </button>

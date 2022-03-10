@@ -1,7 +1,6 @@
 import { maybeSlugify } from '$lib/util';
 import { z } from 'zod';
 
-import { CollectionSchema } from './collection';
 import { FileSchema } from './file';
 
 export const AlbumSchema = z
@@ -32,6 +31,7 @@ export type UpdateAlbum = z.infer<typeof UpdateAlbumSchema>;
 export const AlbumWithRelationsSchema = z.lazy(() =>
   AlbumSchema.extend({
     files: z.array(FileSchema),
+    cover: FileSchema.nullish(),
   })
 );
 

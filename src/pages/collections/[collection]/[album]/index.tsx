@@ -1,17 +1,14 @@
-import { Album, AlbumWithRelations } from '$lib/api/schemas/album';
+import { AlbumWithRelations } from '$lib/api/schemas/album';
 import { Collection } from '$lib/api/schemas/collection';
 import FileRenderer from '$lib/components/FileRenderer';
 import Footer from '$lib/components/Footer';
-import ImageCard from '$lib/components/ImageCard';
 import Navbar from '$lib/components/Navbar';
 import { prisma } from '$lib/prisma';
 import { combineClasses } from '$lib/util';
 import {
   FolderIcon,
   FolderOpenIcon,
-  MenuIcon,
   PhotographIcon,
-  UserRemoveIcon,
   XIcon,
 } from '@heroicons/react/outline';
 import {
@@ -19,18 +16,10 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import {
-  A11y,
-  Controller,
-  Navigation,
-  Pagination,
-  Scrollbar,
-  Virtual,
-} from 'swiper';
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
+import { Controller, Navigation, Pagination, Virtual } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { z } from 'zod';
 
 const AlbumPageParams = z.object({
@@ -59,11 +48,7 @@ export const getServerSideProps: GetServerSideProps<{
           urlName: safeParams.data.album,
         },
         include: {
-          files: {
-            where: {
-              internal: false,
-            },
-          },
+          files: true,
         },
       },
     },
@@ -110,7 +95,7 @@ const CollectionAlbumPage: NextPage<
             by: swiperController,
           }}
           onSwiper={setSwiperController}
-          className="fixed overflow-hidden top-0 left-0 right-0 bottom-0 bg-black/40"
+          className="fixed top-0 bottom-0 left-0 right-0 overflow-hidden bg-black/40"
         >
           {album.files.map((file, index) => (
             <SwiperSlide key={file.id} virtualIndex={index}>
@@ -123,7 +108,7 @@ const CollectionAlbumPage: NextPage<
             </SwiperSlide>
           ))}
           <button
-            className="btn btn-circle absolute top-0 right-0 text-white m-4 z-10"
+            className="absolute top-0 right-0 z-10 m-4 text-white btn btn-circle"
             onClick={() => setCurrentSlide(-1)}
           >
             <XIcon className="w-5 h-5"></XIcon>
@@ -131,7 +116,7 @@ const CollectionAlbumPage: NextPage<
         </Swiper>
       )}
 
-      <div className="container mx-auto space-y-4 px-8 min-h-screen">
+      <div className="container min-h-screen px-8 mx-auto space-y-4">
         <div className="text-sm breadcrumbs">
           <ul>
             <li>
@@ -156,7 +141,7 @@ const CollectionAlbumPage: NextPage<
             </li>
           </ul>
         </div>
-        <h1 className="text-3xl text-neutral font-bold">{album.title}</h1>
+        <h1 className="text-3xl font-bold">{album.title}</h1>
         <div
           className={combineClasses(
             'grid grid-cols-1 gap-4',
@@ -166,7 +151,7 @@ const CollectionAlbumPage: NextPage<
         >
           {album.files.map((file, index) => (
             <div
-              className="card card-compact bg-base-100 shadow-xl"
+              className="shadow-xl card card-compact bg-base-100"
               key={file.id}
             >
               <figure
@@ -178,7 +163,7 @@ const CollectionAlbumPage: NextPage<
               <div className="card-body">
                 <h2 className="card-title">{file.title}</h2>
                 <p>{file.description || 'No description'}</p>
-                <div className="card-actions justify-end">
+                <div className="justify-end card-actions">
                   <button
                     className="btn btn-primary"
                     onClick={() => setCurrentSlide(index)}
