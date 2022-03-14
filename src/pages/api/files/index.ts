@@ -13,6 +13,7 @@ import { IncomingMessage } from 'http';
 import { getSession } from 'next-auth/react';
 import path from 'path';
 import sharp, { Metadata, Sharp } from 'sharp';
+import { z } from 'zod';
 
 export const config = {
   api: {
@@ -101,7 +102,9 @@ async function handleFileUpload(req: IncomingMessage) {
     });
   });
 
-  const postData = await CreateFileSchema.parseAsync(formFields);
+  const postData = await CreateFileSchema.extend({
+    featured: z.string(),
+  }).parseAsync(formFields);
 
   if (!postData.urlName) {
     postData.urlName = maybeSlugify(postData.title);
@@ -144,13 +147,14 @@ async function handleFileUpload(req: IncomingMessage) {
 
   const file = await prisma.file.create({
     data: {
+      ...(postData as CreateFile & { urlName: string; featured: never }),
+      featured: postData.featured === 'true',
       id: fileId,
       fileName: uploadedFile.newFilename,
       mimeType: uploadedFile.mimetype,
       size: uploadedFile.size,
       height: size?.height,
       width: size?.width,
-      ...(postData as CreateFile & { urlName: string }),
     },
   });
 

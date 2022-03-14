@@ -88,6 +88,7 @@ const AdminViewFilePage = ({
       title: file.title,
       description: file.description,
       albumId: album.id,
+      featured: file.featured,
     },
   });
 
@@ -158,6 +159,15 @@ const AdminViewFilePage = ({
                 {errors.description.message}
               </span>
             )}
+
+            <label className="cursor-pointer label">
+              <span className="label-text">Featured on Homepage</span>
+              <input
+                type="checkbox"
+                className="checkbox"
+                {...register('featured')}
+              />
+            </label>
 
             <div className="justify-end card-actions">
               <button type="submit" className="btn" disabled={!isDirty}>

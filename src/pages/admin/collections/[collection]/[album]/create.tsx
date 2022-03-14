@@ -3,6 +3,7 @@ import {
   CollectionWithRelations,
   CreateCollection,
 } from '$lib/api/schemas/collection';
+import { CreateFile } from '$lib/api/schemas/file';
 import { client } from '$lib/http';
 import { prisma } from '$lib/prisma';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
@@ -71,9 +72,9 @@ const AdminCreateFilePage = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields, ...formState },
-  } = useForm<CreateCollection>({
-    // resolver: zodResolver(CreateCollectionSchema),
+    formState: { errors },
+  } = useForm<CreateFile>({
+    // resolver: zodResolver(CreateFileSchema),
     defaultValues: {},
   });
 
@@ -83,12 +84,12 @@ const AdminCreateFilePage = ({
     setSelectedFile((event.target as HTMLFormElement).files[0]);
   };
 
-  const onSubmit: SubmitHandler<CreateCollection> = async (data) => {
+  const onSubmit: SubmitHandler<CreateFile> = async (data) => {
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
       if (value) {
-        formData.append(key, value);
+        formData.append(key, value.toString());
       }
     });
 
@@ -138,6 +139,15 @@ const AdminCreateFilePage = ({
               {errors.description.message}
             </span>
           )}
+
+          <label className="cursor-pointer label">
+            <span className="label-text">Featured on Homepage</span>
+            <input
+              type="checkbox"
+              className="checkbox"
+              {...register('featured')}
+            />
+          </label>
 
           <input
             type="file"

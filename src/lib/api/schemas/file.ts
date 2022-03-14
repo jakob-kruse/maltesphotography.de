@@ -1,8 +1,6 @@
 import { maybeSlugify } from '$lib/util';
 import { z } from 'zod';
 
-import { Album, AlbumSchema, AlbumWithRelations } from './album';
-
 export const FileSchema = z
   .object({
     id: z.string(),
@@ -10,6 +8,7 @@ export const FileSchema = z
     urlName: z.string().nullish().transform(maybeSlugify),
     title: z.string(),
     description: z.string().min(1).nullish(),
+    featured: z.boolean().default(false),
     mimeType: z.string(),
     size: z.number(),
     width: z.number(),

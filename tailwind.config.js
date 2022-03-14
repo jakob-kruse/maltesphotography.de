@@ -7,6 +7,15 @@ module.exports = {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
+      animation: {
+        opacityHighlight: 'opacityHighlight 2s ease-in-out forwards',
+      },
+      keyframes: {
+        opacityHighlight: {
+          '0%': { opacity: 0.5 },
+          '100%': { opacity: 0.05 },
+        },
+      },
     },
   },
   darkMode: 'class',
