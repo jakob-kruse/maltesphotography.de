@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps<{
   };
 };
 
-const AdminCreateAlbumPage = ({
+const AdminAlbumsCreatePage = ({
   collection,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
@@ -47,7 +47,7 @@ const AdminCreateAlbumPage = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields, ...formState },
+    formState: { errors, dirtyFields },
   } = useForm<CreateCollection>({
     // resolver: zodResolver(CreateCollectionSchema),
     defaultValues: {
@@ -116,4 +116,4 @@ const AdminCreateAlbumPage = ({
   );
 };
 
-export default AdminCreateAlbumPage;
+export default AdminAlbumsCreatePage;

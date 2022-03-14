@@ -1,5 +1,5 @@
 {
-  "name": "maltography",
+  "name": "@jakob-kruse/maltesphotography.de",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,11 +9,7 @@
     "format": "prettier --write '**/*.{ts,tsx}'",
     "lint": "next lint",
     "prepare": "git config --local core.hooksPath .githooks",
-    "postinstall": "prisma generate",
-    "seed": "node -r esbuild-register prisma/seed/index.ts"
-  },
-  "prisma": {
-    "seed": "yarn run seed"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@fontsource/inter": "^4.5.4",
@@ -21,8 +17,6 @@
     "@hookform/resolvers": "^2.8.8",
     "@next-auth/prisma-adapter": "^1.0.1",
     "@prisma/client": "^3.10.0",
-    "@tailwindcss/aspect-ratio": "^0.4.0",
-    "@tailwindcss/forms": "^0.4.0",
     "@tailwindcss/typography": "^0.5.2",
     "cuid": "^2.1.8",
     "daisyui": "^2.4.0",
@@ -38,8 +32,6 @@
     "sharp": "^0.30.2",
     "slugify": "^1.6.5",
     "swiper": "^8.0.7",
-    "theme-change": "^2.0.2",
-    "ts-node": "^10.6.0",
     "zod": "^3.11.6"
   },
   "devDependencies": {
@@ -50,8 +42,6 @@
     "@types/sharp": "^0.29.5",
     "autoprefixer": "^10.4.2",
     "cssnano": "^5.1.4",
-    "esbuild": "^0.14.24",
-    "esbuild-register": "^3.3.2",
     "eslint": "^8.9.0",
     "eslint-config-next": "^12.1.0",
     "eslint-config-prettier": "^8.4.0",

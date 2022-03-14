@@ -4,7 +4,7 @@ import { ApiResponseData } from '$lib/util';
 import { useRouter } from 'next/router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-const AdminCreateCollectionPage = () => {
+const AdminCollectionsCreatePage = () => {
   const router = useRouter();
 
   const {
@@ -71,4 +71,4 @@ const AdminCreateCollectionPage = () => {
   );
 };
 
-export default AdminCreateCollectionPage;
+export default AdminCollectionsCreatePage;

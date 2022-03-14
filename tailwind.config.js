@@ -23,10 +23,5 @@ module.exports = {
     themes: ['light', 'halloween'],
     darkTheme: 'halloween',
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/aspect-ratio'),
-    require('daisyui'),
-  ],
+  plugins: [require('@tailwindcss/typography'), require('daisyui')],
 };

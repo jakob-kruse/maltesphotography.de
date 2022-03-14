@@ -103,7 +103,7 @@ async function handleFileUpload(req: IncomingMessage) {
   });
 
   const postData = await CreateFileSchema.extend({
-    featured: z.string(),
+    featured: z.string().optional().default('false'),
   }).parseAsync(formFields);
 
   if (!postData.urlName) {

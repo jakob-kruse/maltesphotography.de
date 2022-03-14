@@ -18,7 +18,7 @@ export const getServerSideProps: GetServerSideProps<{
   };
 };
 
-const CollectionIndexPage = ({
+const AdminCollectionsListPage = ({
   collections: _collections,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [collections, setCollections] = useState(_collections);
@@ -55,9 +55,9 @@ const CollectionIndexPage = ({
           </thead>
           <tbody>
             {collections.length === 0 ? (
-              <div className="py-3 pl-2">
-                <p>No collections yet</p>
-              </div>
+              <tr className="text-center">
+                <td colSpan={3}>No collections yet</td>
+              </tr>
             ) : (
               collections.map((collection) => (
                 <tr key={collection.id}>
@@ -101,4 +101,4 @@ const CollectionIndexPage = ({
   );
 };
 
-export default CollectionIndexPage;
+export default AdminCollectionsListPage;

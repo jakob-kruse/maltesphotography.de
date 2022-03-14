@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<{
   };
 };
 
-const CollectionsPage: NextPage<
+const CollectionsListPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ collections }) => {
   return (
@@ -94,4 +94,4 @@ const CollectionsPage: NextPage<
   );
 };
 
-export default CollectionsPage;
+export default CollectionsListPage;

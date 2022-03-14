@@ -32,7 +32,7 @@ export const prisma =
             await unlinkFile(file);
           }
         } catch (error) {
-          console.error(error);
+          // less work i guess
         }
       }
 

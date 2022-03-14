@@ -41,17 +41,6 @@ export default validate(schemaMap, async (req, res) => {
           id,
         },
       });
-
-      try {
-        const fileStats = await fs.stat(`uploads/${deletedFile.fileName}`);
-
-        if (fileStats.isFile()) {
-          await fs.unlink(`uploads/${deletedFile.fileName}`);
-        }
-      } catch (error) {
-        // whatever xd
-      }
-
       return res
         .status(200)
         .json({ data: deletedFile } as ApiResponseData<File>);

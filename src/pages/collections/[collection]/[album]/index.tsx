@@ -68,7 +68,7 @@ export const getServerSideProps: GetServerSideProps<{
     },
   };
 };
-const CollectionAlbumPage: NextPage<
+const FilesListPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ album, collection }) => {
   const [swiperController, setSwiperController] = useState<any>();
@@ -186,4 +186,4 @@ const CollectionAlbumPage: NextPage<
   );
 };
 
-export default CollectionAlbumPage;
+export default FilesListPage;

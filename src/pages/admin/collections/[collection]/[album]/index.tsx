@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps<{
   };
 };
 
-const AdminCollectionAlbumPage: NextPage<
+const AdminFileListPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ collection, album }) => {
   const [files, setFiles] = useState(album.files);
@@ -225,9 +225,9 @@ const AdminCollectionAlbumPage: NextPage<
               </thead>
               <tbody>
                 {files.length === 0 ? (
-                  <div className="py-3 pl-2">
-                    <p>No files yet</p>
-                  </div>
+                  <tr className="text-center">
+                    <td colSpan={3}>No files yet</td>
+                  </tr>
                 ) : (
                   files.map((file) => (
                     <tr key={file.id}>
@@ -279,4 +279,4 @@ const AdminCollectionAlbumPage: NextPage<
   );
 };
 
-export default AdminCollectionAlbumPage;
+export default AdminFileListPage;

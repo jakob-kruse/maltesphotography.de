@@ -64,7 +64,7 @@ export const getServerSideProps: GetServerSideProps<{
   };
 };
 
-const AdminCollectionPage: NextPage<
+const AdminAlbumsListPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ collection }) => {
   const [albums, setAlbums] = useState(collection.albums);
@@ -193,9 +193,9 @@ const AdminCollectionPage: NextPage<
               </thead>
               <tbody>
                 {albums.length === 0 ? (
-                  <div className="py-3 pl-2">
-                    <p>No albums yet</p>
-                  </div>
+                  <tr className="text-center">
+                    <td colSpan={3}>No albums yet</td>
+                  </tr>
                 ) : (
                   albums.map((album) => (
                     <tr key={album.id}>
@@ -241,4 +241,4 @@ const AdminCollectionPage: NextPage<
   );
 };
 
-export default AdminCollectionPage;
+export default AdminAlbumsListPage;

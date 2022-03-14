@@ -1,10 +1,4 @@
-import { NextApiRequest } from 'next';
-import { getSession } from 'next-auth/react';
-import { FieldError } from 'react-hook-form';
 import slugify from 'slugify';
-import { ZodError } from 'zod';
-
-import { CreateCollection } from './api/schemas/collection';
 
 export type ApiResponseData<TData = any> = {
   data: TData;
@@ -56,25 +50,4 @@ export function ensureUrlName(input: {
   }
 
   return clone as typeof input & { urlName: string };
-}
-
-export function setErrors(
-  data: any,
-  setError: (name: any, error: FieldError) => void
-) {
-  const fieldErrors = data?.error?.details?.formErrors?.fieldErrors as Record<
-    string,
-    string[]
-  >;
-
-  if (!fieldErrors) {
-    throw new Error('No field errors found');
-  }
-
-  Object.entries(fieldErrors).forEach(([field, error]) => {
-    setError(field, {
-      type: 'manual',
-      message: error[0] || 'Unknown error',
-    });
-  });
 }

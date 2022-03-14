@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps<{
   };
 };
 
-const CollectionPage: NextPage<
+const AlbumsListPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ collection }) => {
   return (
@@ -138,4 +138,4 @@ const CollectionPage: NextPage<
   );
 };
 
-export default CollectionPage;
+export default AlbumsListPage;

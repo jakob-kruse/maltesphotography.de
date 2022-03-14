@@ -71,7 +71,7 @@ export const getServerSideProps: GetServerSideProps<{
   };
 };
 
-const AdminViewFilePage = ({
+const AdminFileShowPage = ({
   collection,
   album,
   file,
@@ -181,4 +181,4 @@ const AdminViewFilePage = ({
   );
 };
 
-export default AdminViewFilePage;
+export default AdminFileShowPage;
