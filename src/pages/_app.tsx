@@ -1,5 +1,6 @@
 import '@fontsource/inter';
 import { SessionProvider } from 'next-auth/react';
+import { DefaultSeo } from 'next-seo';
 import type { AppProps } from 'next/app';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -13,8 +14,20 @@ export default function MyApp({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <>
+      <DefaultSeo
+        titleTemplate="maltesphotography.de | %s"
+        description="Personal photography website"
+        canonical="https://maltesphotography.de"
+        twitter={{
+          handle: '@MalteOfficial',
+          site: '@MalteOfficial',
+          cardType: 'summary',
+        }}
+      />
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+    </>
   );
 }

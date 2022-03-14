@@ -16,6 +16,7 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from 'next';
+import { NextSeo } from 'next-seo';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Controller, Navigation, Pagination, Virtual } from 'swiper';
@@ -79,6 +80,10 @@ const CollectionAlbumPage: NextPage<
 
   return (
     <>
+      <NextSeo
+        title={`${collection.title} - ${album.title}`}
+        description={album.description || 'No description'}
+      />
       <Navbar></Navbar>
 
       {currentSlide !== -1 && (

@@ -11,6 +11,7 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from 'next';
+import { NextSeo } from 'next-seo';
 import Link from 'next/link';
 
 export const getServerSideProps: GetServerSideProps<{
@@ -55,6 +56,11 @@ const CollectionPage: NextPage<
   return (
     <>
       <Navbar />
+
+      <NextSeo
+        title={collection.title}
+        description={collection.description || 'No description'}
+      />
 
       <div className="container min-h-screen px-8 mx-auto space-y-4">
         <div className="text-sm breadcrumbs">
