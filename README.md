@@ -61,19 +61,19 @@ You can find yours here: https://api.github.com/users/your-github-username. It w
 ### Setup the Database
 
 ```bash
-yarn prisma migrate deploy
+npx prisma migrate deploy
 ```
 
 ### Build the application
 
 ```bash
-yarn build
+npm run build
 ```
 
 ### Start the server
 
 ```bash
-yarn start
+npm run start
 ```
 
 This starts the application on port 3000. This can be modified by using `yarn start --port <PORT>`
