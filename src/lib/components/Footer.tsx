@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 const Footer: FC = () => {
   return (
-    <footer className="container p-10 mx-auto bg-base-300/50 footer text-base-content">
+    <footer className="container mt-8 p-10 mx-auto bg-base-300/50 footer text-base-content">
       <div className="leading-loose">
         <Image src="/svg/Logo.svg" width={64} height={64} alt="Logo"></Image>
         <p>maltesphotography.de</p>

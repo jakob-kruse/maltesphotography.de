@@ -7,12 +7,14 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: NicePWD
+      POSTGRES_USER: mp
+      POSTGRES_PASSWORD: mp
+      POSTGRES_DB: mp
     ports:
-      - 5150:5432
+      - 5432:5432
 
   adminer:
     image: adminer
     restart: always
     ports:
-      - 5151:8080
+      - 8080:8080

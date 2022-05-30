@@ -44,11 +44,21 @@ export default validate(schemaMap, async (req, res) => {
   switch (req.method as keyof typeof schemaMap) {
     case 'POST': {
       await mkdir(thumbnailDir, { recursive: true });
+
       const { file, formFile } = await handleFileUpload(req);
 
       const sharpFile = sharp(formFile.filepath).rotate();
+      console.log('before water');
 
       const watermarked = await addWatermark(sharpFile);
+      if (!watermarked) {
+        return res.status(400).json({
+          error: {
+            message: 'Could not add watermark',
+            details: null,
+          },
+        });
+      }
       await watermarked.toFile(path.join(uploadDir, file.fileName));
 
       const thumbnail = sharp(path.join(uploadDir, file.fileName)).rotate();
@@ -185,6 +195,16 @@ async function getLogo() {
 
 async function addWatermark(file: Sharp) {
   const logoData = await getLogo();
+  const fileMeta = await file.metadata();
+
+  if (
+    logoData.metaData.width! > fileMeta.width! ||
+    logoData.metaData.height! > fileMeta.height!
+  ) {
+    console.log('Image is smaller than logo (512x512)');
+
+    return null;
+  }
 
   return file.clone().composite([
     {

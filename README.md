@@ -36,6 +36,10 @@ datasource db {
 
 This is the root of your application for example `https://maltesphotography.de`.
 
+`NEXT_PUBLIC_URL`
+
+Used for the client side http client. Should be the same as `NEXTAUTH_URL`.
+
 [More information](https://next-auth.js.org/configuration/options#nextauth_url)
 
 `NEXTAUTH_SECRET`
