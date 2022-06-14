@@ -16,6 +16,7 @@ export default function MyApp({
   return (
     <>
       <DefaultSeo
+        title="maltesphotography.de"
         titleTemplate="maltesphotography.de | %s"
         description="Personal photography website"
         canonical="https://maltesphotography.de"

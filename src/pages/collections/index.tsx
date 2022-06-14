@@ -10,6 +10,7 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from 'next';
+import { DefaultSeo } from 'next-seo';
 import Link from 'next/link';
 
 export const getServerSideProps: GetServerSideProps<{
@@ -33,6 +34,7 @@ const CollectionsListPage: NextPage<
 > = ({ collections }) => {
   return (
     <>
+      <DefaultSeo title="Collections" />
       <Navbar />
 
       <div className="container min-h-screen px-8 mx-auto space-y-4">
