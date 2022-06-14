@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
-const Navbar: FC = ({ children }) => {
+const Navbar: FC<{ children?: ReactNode }> = ({ children }) => {
   return (
     <div className="navbar bg-transparent print:hidden gap-x-2">
       <Link href="/">
