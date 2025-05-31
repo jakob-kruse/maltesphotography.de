@@ -40,6 +40,7 @@ const Footer: FC = () => {
           <a className="link link-hover">Impressum</a>
         </Link>
       </div>
+      <script data-host="https://my-analytics.eu" data-dnt="false" src="https://my-analytics.eu/js/script.js" id="ZwSg9rf6GA" async defer></script>
     </footer>
   );
 };
